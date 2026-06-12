@@ -1,0 +1,33 @@
+#include "cipher.hpp"
+#include "cryptogrid.hpp"
+#include <cstdlib> // for srand
+#include <string>
+
+using namespace std;
+
+
+Cipher::Cipher(int seed) : baseSeed(seed) {}
+
+string Cipher::encrypt(const string& message, int rounds) {
+    string current = message;
+    for (int i = 0; i < rounds; ++i) {
+        srand(baseSeed + i);
+        CryptoGrid cg;
+        int size = DiamondGrid::calculateSize(current.length());
+        cg.create(size, current);
+        current = cg.encryptToString();
+    }
+    return current;
+}
+
+string Cipher::decrypt(const string& encrypted, int rounds) {
+    string current = encrypted;
+    for (int i = rounds - 1; i >= 0; --i) {
+        srand(baseSeed + i);
+        CryptoGrid cg;
+        cg.loadFromString(current);
+        current = cg.extractMessage(i == 0);
+    }
+    return current;
+}
+

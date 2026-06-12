@@ -1,0 +1,37 @@
+# -------------------------------------
+# Compiled Executables and Build Output
+# -------------------------------------
+# The binary executable mentioned in your README
+encryptor
+*.o
+*.out
+*.exe
+
+# -------------------------------------
+# Xcode Specific Files
+# -------------------------------------
+# Ignores your personal UI state and workspace settings (e.g., abdalhadialkhub.xcuserdatad)
+# while keeping the core project.pbxproj file intact for version control.
+xcuserdata/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+project.xcworkspace/
+
+# -------------------------------------
+# Mac System Files
+# -------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# -------------------------------------
+# VS Code Settings (Optional)
+# -------------------------------------
+.vscode/
+
+# -------------------------------------
+# Archives
+# -------------------------------------
+# Prevents large compressed backups from bloating the repository
+*.zip
+2800ICT.zip

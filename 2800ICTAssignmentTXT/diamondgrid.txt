@@ -1,0 +1,80 @@
+
+#include "diamondgrid.hpp"
+#include <cmath>
+
+using namespace std;
+
+void DiamondGrid::computePositions(int n) {
+    rows.clear();
+    cols.clear();
+    int layers = (n + 1) / 2;
+
+    for (int layer = 0; layer < layers; ++layer) {
+        int r = n / 2;
+        int c = layer;
+
+        // Top-right
+        while (r >= layer && c < n - layer) {
+            rows.push_back(r);
+            cols.push_back(c);
+            r--;
+            c++;
+        }
+        r++; c--;
+
+        // Bottom-right
+        r++; c++;
+        while (r < n - layer && c < n - layer) {
+            rows.push_back(r);
+            cols.push_back(c);
+            r++;
+            c++;
+        }
+        r--; c--;
+
+        // Bottom-left
+        r++; c--;
+        while (r < n - layer && c >= layer) {
+            rows.push_back(r);
+            cols.push_back(c);
+            r++;
+            c--;
+        }
+        r--; c++;
+
+        // Top-left
+        r--; c--;
+        while (r > layer && c > layer) {
+            rows.push_back(r);
+            cols.push_back(c);
+            r--;
+            c--;
+        }
+    }
+}
+
+int DiamondGrid::calculateSize(int msgLength) {
+    int n = 1;
+    while (true) {
+        DiamondGrid temp;
+        temp.generate(n);
+        if (temp.positionsCount() >= msgLength) return n;
+        n += 2; // only odd sizes are valid
+    }
+}
+
+void DiamondGrid::generate(int n) {
+    computePositions(n);
+}
+
+int DiamondGrid::positionsCount() const {
+    return rows.size();
+}
+
+const vector<int>& DiamondGrid::getRows() const {
+    return rows;
+}
+
+const vector<int>& DiamondGrid::getCols() const {
+    return cols;
+}

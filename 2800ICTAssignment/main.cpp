@@ -1,0 +1,7 @@
+#include "menuhandler.hpp"
+
+int main() {
+    MenuHandler menu;
+    menu.mainMenu();
+    return 0;
+}

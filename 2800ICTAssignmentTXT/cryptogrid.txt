@@ -1,0 +1,98 @@
+
+#include "cryptogrid.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+char CryptoGrid::randomChar() {
+    return 'A' + rand() % 26;
+}
+
+void CryptoGrid::create(int size, const string& message) {
+    diamondPattern.generate(size);
+    const auto& rows = diamondPattern.getRows();
+    const auto& cols = diamondPattern.getCols();
+
+    grid.resize(size, vector<char>(size));
+    vector<vector<bool>> isDiamond(size, vector<bool>(size, false));
+
+    int msgIndex = 0;
+    for (size_t i = 0; i < rows.size(); ++i) {
+        int r = rows[i];
+        int c = cols[i];
+
+        if (r >= size || c >= size) {
+            cerr << "Invalid position: (" << r << "," << c << ") for size " << size << endl;
+            exit(1);
+        }
+
+        isDiamond[r][c] = true;
+        grid[r][c] = (msgIndex < message.size()) ? message[msgIndex++] : randomChar();
+    }
+
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (!isDiamond[i][j]) {
+                grid[i][j] = randomChar();
+            }
+        }
+    }
+}
+
+string CryptoGrid::encryptToString() const {
+    string encrypted;
+    int n = grid.size();
+    for (int col = 0; col < n; ++col) {
+        for (int row = 0; row < n; ++row) {
+            encrypted += grid[row][col];
+        }
+    }
+    return encrypted;
+}
+
+void CryptoGrid::loadFromString(const string& encrypted) {
+    int n = sqrt(encrypted.size());
+    grid.resize(n, vector<char>(n));
+    diamondPattern.generate(n);
+    int idx = 0;
+    for (int col = 0; col < n; ++col) {
+        for (int row = 0; row < n; ++row) {
+            grid[row][col] = encrypted[idx++];
+        }
+    }
+}
+
+string CryptoGrid::extractMessage(bool stripDot) const {
+    const auto& rows = diamondPattern.getRows();
+    const auto& cols = diamondPattern.getCols();
+    string decrypted;
+
+    for (size_t i = 0; i < rows.size(); ++i) {
+        decrypted += grid[rows[i]][cols[i]];
+    }
+
+    if (stripDot) {
+        size_t dotPos = decrypted.find('.');
+        if (dotPos != string::npos) {
+            decrypted = decrypted.substr(0, dotPos);
+        }
+    }
+
+    return decrypted;
+}
+
+int CryptoGrid::getSize() const {
+    return grid.size();
+}
+
+void CryptoGrid::display() const {
+    for (const auto& row : grid) {
+        for (char ch : row) {
+            cout << ch << ' ';
+        }
+        cout << '\n';
+    }
+}
